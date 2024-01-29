@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Settings from "./Components/Settings";
 import Question from "./Components/Questions";
 import Score from "./Components/Score";
@@ -17,9 +17,13 @@ function App() {
   const regenerationLimit = 3;
   const [userAnswers, setUserAnswers] = useState({});
   const [showResultsScreen, setShowResultsScreen] = useState(false);
-
+  const [totalAttemptedQuestions, setTotalAttemptedQuestions] = useState(0);
   const [allQuestions, setAllQuestions] = useState([]);
   const [allUserAnswers, setAllUserAnswers] = useState({});
+
+  useEffect(() => {
+    console.log("Updated allQuestions:", allQuestions);
+  }, [allQuestions]);
 
   // Reset Quiz
   const resetQuiz = () => {
@@ -32,6 +36,7 @@ function App() {
     setShowResultsScreen(false);
     setAllQuestions([]);
     setAllUserAnswers({});
+    setTotalAttemptedQuestions(0);
   };
 
   // User Input Parameters
@@ -101,6 +106,7 @@ function App() {
         );
         const data = await response.json();
         console.log(data);
+        setTotalAttemptedQuestions((prev) => prev + data.results.length);
         function shuffleArray(array) {
           for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -110,6 +116,7 @@ function App() {
 
         const newQuestions = data.results;
         setAllQuestions((prev) => [...prev, ...newQuestions]);
+        console.log(allQuestions);
 
         const formattedQuestions = data.results.map((question) => {
           const answers = [
@@ -137,15 +144,6 @@ function App() {
     fetchTrivia();
   };
 
-  // const displayResults = () => {
-  //   return (
-  //     <div>
-  //       <h2>Your Score: {score}</h2>
-  //       <button onClick={resetQuiz}>Reset Quiz</button>
-  //     </div>
-  //   );
-  // };
-
   const addAnswer = (selectedAnswers) => {
     setAllUserAnswers({ ...selectedAnswers, selectedAnswers });
   };
@@ -172,7 +170,6 @@ function App() {
       {showGenerateButton && (
         <button onClick={handleGenerate}>Generate Quiz</button>
       )}
-
       {quizStarted && !showResultsScreen && (
         <div>
           <Question
@@ -182,10 +179,9 @@ function App() {
             setScore={setScore}
             handleQuizCompletion={handleQuizCompletion}
           />
-          <Score score={score} />
+          <Score score={score} totalQuestions={totalAttemptedQuestions} />
         </div>
       )}
-
       {!showGenerateButton && !showResultsScreen && (
         <>
           <button onClick={resetQuiz}>Reset Quiz</button>
@@ -209,33 +205,9 @@ function App() {
 
       {showResultsScreen && (
         <div>
-          {console.log(allUserAnswers)}
-          <h1>Your Score: {score}</h1>
-          {allQuestions &&
-            allQuestions.length > 0 &&
-            allQuestions.map((question, index) => {
-              const userAnswerData = allUserAnswers[index];
-              return (
-                <div key={index}>
-                  <h3>{decodeHtml(question.question)}</h3>
-                  {question.answers.map((answer, answerIndex) => {
-                    let style = {};
-                    if (
-                      userAnswerData &&
-                      answer === userAnswerData.selectedAnswer
-                    ) {
-                      style.backgroundColor =
-                        answer === question.correct_answer ? "green" : "red";
-                    }
-                    return (
-                      <button key={answerIndex} style={style} disabled={true}>
-                        {decodeHtml(answer)}
-                      </button>
-                    );
-                  })}
-                </div>
-              );
-            })}
+          <h1>
+            Your Score: {score}/{questions.length}
+          </h1>
           <button onClick={resetQuiz}>Reset Quiz</button>
         </div>
       )}
