@@ -21,7 +21,6 @@ export default function Question({
   const onFinalAnswerSelected = (selectedAnswers) => {
     // Debugging to see if answers are being stored
     console.log("Final Answers: ", selectedAnswers);
-
   };
 
   useEffect(() => {
@@ -61,28 +60,30 @@ export default function Question({
       {questions.map((question, index) => (
         <div key={index}>
           <h1>{decodeHtml(question.question)}</h1>
-          {question.answers.map((answer, answerIndex) => (
-            <button
-              key={answerIndex}
-              onClick={() =>
-                handleAnswerClick(index, answer, question.correct_answer)
+          {question.answers.map((answer, answerIndex) => {
+            let style = {};
+            if (answeredQuestions[index]) {
+              if (answer === question.correct_answer) {
+                style.backgroundColor = "green";
+              } else if (answer === selectedAnswers[index]?.selectedAnswer) {
+                style.backgroundColor = "red";
               }
-              disabled={answeredQuestions[index]}
-              style={{
-                backgroundColor:
-                  selectedAnswers[index]?.selectedAnswer === answer
-                    ? answer === question.correct_answer
-                      ? "green"
-                      : "red"
-                    : null,
-              }}
-            >
-              {decodeHtml(answer)}
-            </button>
-          ))}
+            }
+            return (
+              <button
+                key={answerIndex}
+                onClick={() =>
+                  handleAnswerClick(index, answer, question.correct_answer)
+                }
+                disabled={answeredQuestions[index]}
+                style={style}
+              >
+                {decodeHtml(answer)}
+              </button>
+            );
+          })}
         </div>
       ))}
-
       {isQuizComplete && (
         <button onClick={() => handleQuizCompletion(selectedAnswers)}>
           Submit Quiz
@@ -91,43 +92,3 @@ export default function Question({
     </div>
   );
 }
-
-// return (
-//   <div>
-//     {questions.map((question, index) => (
-//       <div key={index}>
-//         <h1>Question: {question.question}</h1>
-//         {question.answers.map((answer, answerIndex) => (
-//           <div key={answerIndex}>{answer}</div>
-//         ))}
-//       </div>
-//     ))}
-//   </div>
-// );
-
-// const handleAnswerClick = (selectedAnswer, correctAnswer) => {
-//   if (selectedAnswer === correctAnswer) {
-//     score+=1
-
-//   } else {
-//     <p>Incorrect answer!</p>
-//   }
-// }
-// return (
-//   <div>
-//       {questions.map((question, index) => (
-//           <div key={index}>
-//               <h1>Question: {question.question}</h1>
-//               {question.answers.map((answer, answerIndex) => (
-//                   <button
-//                       key={answerIndex}
-//                       onClick={() => handleAnswerClick(answer, question.correct_answer)}
-//                   >
-//                       {answer}
-//                   </button>
-//               ))}
-//           </div>
-//       ))}
-//   </div>
-// );
-// }

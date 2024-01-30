@@ -206,7 +206,7 @@ function App() {
       {showResultsScreen && (
         <div>
           <h1>
-            Your Score: {score}/{questions.length}
+            Your Score: {score}/{totalAttemptedQuestions}
           </h1>
           <button onClick={resetQuiz}>Reset Quiz</button>
         </div>
