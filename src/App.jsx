@@ -4,7 +4,6 @@ import Question from "./Components/Questions";
 import Score from "./Components/Score";
 import decodeHtml from "./Components/Utils";
 
-import "./App.css";
 
 function App() {
   const [quizStarted, setQuizStarted] = useState(false);
@@ -155,9 +154,9 @@ function App() {
   };
 
   return (
-    <div>
+    <div className="return-div">
       {showSettings && (
-        <div>
+        <div className="settings-container" >
           <Settings
             handleAmount={handleAmount}
             handleCategory={handleCategory}
@@ -168,10 +167,12 @@ function App() {
         </div>
       )}
       {showGenerateButton && (
-        <button onClick={handleGenerate}>Generate Quiz</button>
+        <div className="generate-btn-div" >
+        <button className="generate-btn" onClick={handleGenerate}>Generate Quiz</button>
+        </div>
       )}
       {quizStarted && !showResultsScreen && (
-        <div>
+        <div className="quiz-started-container" >
           <Question
             qParam={qParam}
             questions={questions}
@@ -179,14 +180,17 @@ function App() {
             setScore={setScore}
             handleQuizCompletion={handleQuizCompletion}
           />
+          <div className="quiz-started-score" >
           <Score score={score} totalQuestions={totalAttemptedQuestions} />
+          </div>
         </div>
       )}
       {!showGenerateButton && !showResultsScreen && (
-        <>
-          <button onClick={resetQuiz}>Reset Quiz</button>
+        <div className="reset-regen-div" >
+          <button className="reset-btn" onClick={resetQuiz}>Reset Quiz</button>
           {regenerationCount !== regenerationLimit ? (
             <button
+            className="regenerate-btn"
               onClick={() => {
                 regenerateQuiz();
                 addAnswer(userAnswers);
@@ -198,18 +202,20 @@ function App() {
             ""
           )}
           {isCooldown && (
-            <p>Please wait 15 secs before regenerating the quiz! :D</p>
+            <div className="cooldown-container" >
+            <p className="cooldown-p" >Please wait 15 secs before regenerating the quiz! :D</p>
+            </div>
           )}
-        </>
+        </div>
       )}
 
       {showResultsScreen && (
-        <div>
-          <h1>
+        <div className="results-container" >
+          <h1 className="score-h1" >
             Your Score: {score}/{totalAttemptedQuestions}
           </h1>
-          <button onClick={resetQuiz}>Reset Quiz</button>
-        </div>
+          <button className="reset-btn" onClick={resetQuiz}>Reset Quiz</button>
+        </div> 
       )}
     </div>
   );
