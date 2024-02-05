@@ -18,11 +18,6 @@ export default function Question({
     setAnsweredQuestions({});
   };
 
-  const onFinalAnswerSelected = (selectedAnswers) => {
-    // Debugging to see if answers are being stored
-    console.log("Final Answers: ", selectedAnswers);
-  };
-
   useEffect(() => {
     resetQuestionState();
   }, [questions]);
@@ -56,36 +51,46 @@ export default function Question({
   };
 
   return (
-    <div>
+    <div className="q-return-div">
       {questions.map((question, index) => (
-        <div key={index}>
-          <h1>{decodeHtml(question.question)}</h1>
-          {question.answers.map((answer, answerIndex) => {
-            let style = {};
-            if (answeredQuestions[index]) {
-              if (answer === question.correct_answer) {
-                style.backgroundColor = "green";
-              } else if (answer === selectedAnswers[index]?.selectedAnswer) {
-                style.backgroundColor = "red";
-              }
-            }
-            return (
-              <button
-                key={answerIndex}
-                onClick={() =>
-                  handleAnswerClick(index, answer, question.correct_answer)
+        <div className="question-container" key={index}>
+          <h1 className="question-h1">{decodeHtml(question.question)}</h1>
+          <div className="answers-container">
+            {question.answers.map((answer, answerIndex) => {
+              let style = {};
+              if (answeredQuestions[index]) {
+                if (answer === question.correct_answer) {
+                  style.backgroundColor = "green"
+                  style.color = "white";
+                } else if (answer === selectedAnswers[index]?.selectedAnswer) {
+                  style.backgroundColor = "red"
+                  style.color = "white";
                 }
-                disabled={answeredQuestions[index]}
-                style={style}
-              >
-                {decodeHtml(answer)}
-              </button>
-            );
-          })}
+              }
+              return (
+                <div className="answers">
+                  <button
+                    className="answers-btn"
+                    key={answerIndex}
+                    onClick={() =>
+                      handleAnswerClick(index, answer, question.correct_answer)
+                    }
+                    disabled={answeredQuestions[index]}
+                    style={style}
+                  >
+                    {decodeHtml(answer)}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
         </div>
       ))}
       {isQuizComplete && (
-        <button onClick={() => handleQuizCompletion(selectedAnswers)}>
+        <button
+          className="submit-btn"
+          onClick={() => handleQuizCompletion(selectedAnswers)}
+        >
           Submit Quiz
         </button>
       )}

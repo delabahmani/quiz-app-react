@@ -8,7 +8,7 @@ export default function Settings({
   showQParam,
 }) {
   return (
-    <div>
+    <div className="settings-div" >
       {showQParam && (
         <form
           onSubmit={function (event) {
@@ -47,7 +47,7 @@ export default function Settings({
          
         </form>
       )}
-      ;
+      
     </div>
   );
 }
